@@ -47,7 +47,8 @@ class Tree:
     def get_root(self):
         while self.has_parent():
             self.get_parent()
-
+    
+    # Dump all nodes for testing purposes
     def dump(self):
         print(str(self.node.parent) + '->' + str(self.node))
         if self.has_children():
@@ -56,9 +57,11 @@ class Tree:
                 self.dump()
 
 class Element:
-    def __init__(self, name='', content=''):
+    def __init__(self, name='', content='', attributes='{}'):
         self.name = name
         self.content = content
+        self.attributes = attributes
+    
     def __repr__(self):
         return self.name
 
@@ -83,12 +86,15 @@ class Stags:
             if not in_comment:
                 if not in_tag:
                     if c == '<':
-                        if self.text[i:i+4] == '<!--':
+                        #scripts are ignored as well as comments
+                        if (self.text[i:i+4] == '<!--'
+                                or self.text[i:i+7] == '<script'):
                             in_comment = True
                         else:
                             in_tag = True
                     else:
                         content += c
+                #in tag
                 else:
                     if c == '>':
                         self.tags.append((tag_name,i,content))
@@ -99,16 +105,13 @@ class Stags:
                         tag_name += c
             else:
                 if c == '>':
-                    if self.text[i-2:i+1] == '-->':
+                    if (self.text[i-2:i+1] == '-->'
+                            or self.text[i-7:i+1] == '/script>'):
                         in_comment = False
         
         # Generate list of duplicates to prevent faulty
         # tags from being parent elements
         self.duplicates = []
-
-        #self.duplicates = [t[0] for t in self.tags if
-        #        t[0][-1] != '/']
-        
         for t in self.tags:
             if len(t[0]):
                 if t[0][-1] != '/':
@@ -126,23 +129,37 @@ class Stags:
                         t[0] in self.duplicates):
                     self.duplicates.remove('/' + t[0].split()[0])
                     self.duplicates.remove(t[0])
-
+        
         # Iterate tags and build tree
         content = ''
         for tag in self.tags:
+            parts = tag[0].split()
+            name = tag[0]
+            attributes = {}
+            if len(parts) > 1:
+                name = parts[0]
+                for part in parts[1:]:
+                    if '=' in part:
+                        dict_parts = part.split('=')
+                        key = dict_parts[0]
+                        value = dict_parts[1][1:-1]
+                        attributes[key] = value
+
             if tag[0] in self.duplicates:
                 self.duplicates.remove(tag[0])
+                self.tree.birth(Element(name,'',attributes))
+                self.tree.get_parent()
             else:
                 if len(tag[0]):
                     if tag[0][-1] == '/':
-                        self.tree.birth(Element(tag[0]))
+                        self.tree.birth(Element(name, '', attributes))
                         self.tree.get_parent()
                     elif tag[0][0] == '/':
                         self.tree.node.content += tag[2]
                         self.tree.get_parent()
                     else:
-                        self.tree.birth(Element(tag[0]))
-
+                        self.tree.birth(Element(name, '', attributes))
+        
         self.tree.get_root()
         self.tree.dump()
 
@@ -154,9 +171,8 @@ class Stags:
                 self.tags[b-1][1]+1]
     
 
-
-stags = Stags('http://localhost:3000', 
-'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0',
-'get')
+url = 'https://www.duckduckgo.com'
+agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0'
+stags = Stags(url, agent, 'get')
 
 
