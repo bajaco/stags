@@ -1,60 +1,5 @@
 import requests
-
-# The node class get's attributes from the
-# core object, allowing trees to be built 
-# from any object type
-class Node:
-    def __init__(self, obj):
-        self.core = obj
-        self.parent = None
-        self.children = []
-
-    def __repr__(self):
-        return self.core.__repr__()
-
-    def __getattr__(self, attr):
-        if attr in self.__dict__:
-            return getattr(self, attr)
-        return getattr(self.core, attr)
-
-class Tree:
-    def __init__(self, obj):
-        self.node = Node(obj)
-
-    def has_parent(self):
-        if self.node.parent:
-            return True
-        return False
-
-    def has_children(self):
-        return len(self.node.children)
-        
-    def get_parent(self):
-        self.node = self.node.parent
-
-    def get_child(self,index):
-        self.node = self.node.children[index]
-    
-    def get_children(self):
-        return self.node.children
-
-    def birth(self, obj):
-        child = Node(obj)
-        self.node.children.append(child)
-        child.parent = self.node
-        self.node = child
-
-    def get_root(self):
-        while self.has_parent():
-            self.get_parent()
-    
-    # Dump all nodes for testing purposes
-    def dump(self):
-        print(str(self.node.parent) + '->' + str(self.node))
-        if self.has_children():
-            for child in self.get_children():
-                self.node = child
-                self.dump()
+from treeify import Tree
 
 class Element:
     def __init__(self, name='', content='', attributes='{}'):
@@ -159,9 +104,7 @@ class Stags:
                         self.tree.get_parent()
                     else:
                         self.tree.birth(Element(name, '', attributes))
-        
-        self.tree.get_root()
-        self.tree.dump()
+    
 
     # Function to display original text between tag
     # indices. It works similarly to string slicing.
@@ -169,10 +112,11 @@ class Stags:
         return self.text[self.tags[a][1]
                 - len(self.tags[a][0]) - 1:
                 self.tags[b-1][1]+1]
+
+    def search_attributes(self,search):
+        return [e.attributes[search] for e in self.tree.list if search in e.attributes]
+
+    def dump(self):
+        self.tree.dump()
     
-
-url = 'https://www.duckduckgo.com'
-agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0'
-stags = Stags(url, agent, 'get')
-
 
