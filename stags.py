@@ -10,6 +10,12 @@ class Element:
     def __repr__(self):
         return self.name
 
+    def get_attribute(self, attr):
+        if attr in self.attributes:
+            return self.attributes[attr]
+        else:
+            return None
+
 class Stags:
     def __init__(self,url,agent,method):
         self.user_agent = {'User-Agent': agent}
@@ -18,12 +24,12 @@ class Stags:
             self.text = requests.get(url, 
                     headers = self.user_agent).text
         self.tree = Tree(Element('root'))
-        
         # Initialization for parsing
         self.tags = []
         tag_name = ''
         in_tag = False
         in_comment = False
+        in_quote = False
         content = ''
         
         # Parse text into tags
@@ -85,9 +91,15 @@ class Stags:
                 name = parts[0]
                 for part in parts[1:]:
                     if '=' in part:
+
                         dict_parts = part.split('=')
+                        
+                        #recombine bad splits
+                        #if len(dict_parts) > 2:
+                         #   dict_parts = [dict_parts[0], ''.join(dict_parts[1:])]
+                            
                         key = dict_parts[0]
-                        value = dict_parts[1][1:-1]
+                        value = dict_parts[1]
                         attributes[key] = value
 
             if tag[0] in self.duplicates:
@@ -104,7 +116,7 @@ class Stags:
                         self.tree.get_parent()
                     else:
                         self.tree.birth(Element(name, '', attributes))
-    
+        self.query_list = self.tree.list
 
     # Function to display original text between tag
     # indices. It works similarly to string slicing.
@@ -113,8 +125,27 @@ class Stags:
                 - len(self.tags[a][0]) - 1:
                 self.tags[b-1][1]+1]
 
-    def search_attributes(self,search):
-        return [e.attributes[search] for e in self.tree.list if search in e.attributes]
+    def reset_query(self):
+        self.query_list = self.tree.list
+    
+    def query(self):
+        return self.query_list
+
+    def filter_attributes(self, query):
+        self.query_list = [e for e in self.query_list if query in e.attributes]
+
+    def filter_tags(self, query):
+        self.query_list = [e for e in self.query_list if e.name == query]
+
+    def ascend(self):
+        self.query_list = [e.parent for e in self.query_list if e.parent is not None]
+   
+    def descend(self):
+        res = []
+        for e in self.query_list:
+            for c in e.children:
+                res.append(c)
+        self.query_list = res
 
     def dump(self):
         self.tree.dump()
