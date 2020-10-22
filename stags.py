@@ -10,9 +10,9 @@ class Element:
     def __repr__(self):
         return self.name
 
-    def get_attribute(self, attr):
-        if attr in self.attributes:
-            return self.attributes[attr]
+    def get_attribute(self, attribute):
+        if attribute in self.attributes:
+            return self.attributes[attribute]
         else:
             return None
 
@@ -95,8 +95,8 @@ class Stags:
                         dict_parts = part.split('=')
                         
                         #recombine bad splits
-                        #if len(dict_parts) > 2:
-                         #   dict_parts = [dict_parts[0], ''.join(dict_parts[1:])]
+                        if len(dict_parts) > 2:
+                            dict_parts = [dict_parts[0], ''.join(dict_parts[1:])]
                             
                         key = dict_parts[0]
                         value = dict_parts[1]
