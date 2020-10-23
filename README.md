@@ -38,6 +38,6 @@ Each tag element has the following properties:
 
 Example:
 
-`for t in stags.query():
-     print(t.name)
-     print('href={}'.format(t.get_attribute('href')`
+    for t in stags.query():
+        print(t.name)
+        print('href={}'.format(t.get_attribute('href')
