@@ -1,6 +1,6 @@
 import requests
 from treeify import Tree
-
+from helpers import attributes_pairs
 class Element:
     def __init__(self, name='', content='', attributes='{}'):
         self.name = name
@@ -89,19 +89,7 @@ class Stags:
             attributes = {}
             if len(parts) > 1:
                 name = parts[0]
-                for part in parts[1:]:
-                    if '=' in part:
-
-                        dict_parts = part.split('=')
-                        
-                        #recombine bad splits
-                        if len(dict_parts) > 2:
-                            dict_parts = [dict_parts[0], ''.join(dict_parts[1:])]
-                            
-                        key = dict_parts[0]
-                        value = dict_parts[1]
-                        attributes[key] = value
-
+                attributes = attributes_pairs(''.join(parts[1:])) 
             if tag[0] in self.duplicates:
                 self.duplicates.remove(tag[0])
                 self.tree.birth(Element(name,'',attributes))

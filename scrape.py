@@ -10,9 +10,4 @@ stags.descend()
 stags.descend()
 stags.filter_tags('a')
 
-titles = [e.get_attribute('class') for e in stags.query()]
-
-links = [e.get_attribute('href') for e in stags.query()]
-
-
-print(titles)
+[print(e.get_attribute('href')) for e in stags.query()]
