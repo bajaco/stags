@@ -2,6 +2,10 @@ from stags import Stags
 import datetime
 import time
 
+INTERVAL = int(input('Search interval in seconds: '))
+SEARCH = input('Search term: ')
+LOCATION = input('Location, e.g. remote: ')
+
 def querify(term):
     chars = []
     for c in term:
@@ -14,11 +18,9 @@ def querify(term):
     return ''.join(chars)
 
 jobs = {}
-INTERVAL = 3600
 
-def search(jobs):
-    SEARCH = 'python'
-    LOCATION = 'remote'
+
+def search(jobs, SEARCH, LOCATION):
     SITE =  'https://www.indeed.com'
     SEARCH = querify(SEARCH)
     LOCATION = querify(LOCATION)
@@ -51,16 +53,16 @@ def search(jobs):
     if len(new_jobs) > 0:
         for job in new_jobs.items():
             print('{}: {}'.format(job[1]['title'],job[1]['link']))
+            print('\n')
     else:
         print('No new jobs')
     print(datetime.datetime.now())
     print('----------------------------------------------------------------------------')
-    print('\n')
     jobs.update(new_jobs) 
 
 while True:
     start_time = time.time()
-    search(jobs)
+    search(jobs,SEARCH,LOCATION)
     diff = round(time.time() - start_time)
     time.sleep(INTERVAL - diff)
 

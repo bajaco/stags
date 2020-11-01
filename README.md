@@ -1,6 +1,8 @@
 # scrape.py
 
-scrape.py is a script that uses the Stags class to create a jobs feed in the terminal for Indeed job listings. The file can be edited to configure the search term, location, and time interval. At each interval it will list new jobs that have been added since the last interval. Intervals are not sychronized to time, so expect some drift. I have noticed some malformed titles- there is an error in the stags class that I need to investigate.
+scrape.py is a script that uses the Stags class to create a jobs feed in the terminal for Indeed job listings. Upon running you will be prompted to enter the search term, location, and time interval. At each interval it will list new jobs that have been added since the last interval. Intervals are not sychronized to time, so expect some drift. I have noticed some malformed titles- there is an error in the stags class that I need to investigate. The first request will get all matching listings, so make sure your search terms are specific. I recommend using specific search terms and a long interval time. If making a more general search edit the file and set FROMAGE to 0.
+
+**Currently only accepts general search terms without special characters. A comma in the location is acceptable.**
 
 #### Usage:
 Edit the interval and search options as needed, then:
