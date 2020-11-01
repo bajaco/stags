@@ -1,6 +1,14 @@
+# scrape.py
+
+scrape.py is a script that uses the Stags class to create a jobs feed in the terminal for Indeed job listings. The file can be edited to configure the search term, location, and time interval. At each interval it will list new jobs that have been added since the last interval. Intervals are not sychronized to time, so expect some drift. I have noticed some malformed titles- there is an error in the stags class that I need to investigate.
+
+#### Usage:
+Edit the interval and search options as needed, then:
+`python scrape.py`
+
 # Stags
 
-Stags is an in-progress HTML parser. It creates a tree representation of the document, and provides access to a list of all elements, qhich can be filtered and transmormed.
+Stags is an in-progress HTML parser. It creates a tree representation of the document, and provides access to a list of all elements, which can be filtered and transformed.
 
 ## Usage
 

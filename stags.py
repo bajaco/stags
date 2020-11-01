@@ -2,9 +2,9 @@ import requests
 from treeify import Tree
 from helpers import attributes_pairs
 class Element:
-    def __init__(self, name='', content='', attributes='{}'):
+    def __init__(self, name='', contents='', attributes='{}'):
         self.name = name
-        self.content = content
+        self.contents = contents
         self.attributes = attributes
     
     def __repr__(self):
@@ -30,7 +30,7 @@ class Stags:
         in_tag = False
         in_comment = False
         in_quote = False
-        content = ''
+        contents = ''
         
         # Parse text into tags
         for i,c in enumerate(self.text):
@@ -44,13 +44,13 @@ class Stags:
                         else:
                             in_tag = True
                     else:
-                        content += c
+                        contents += c
                 #in tag
                 else:
                     if c == '>':
-                        self.tags.append((tag_name,i,content))
+                        self.tags.append((tag_name,i,contents))
                         tag_name = ''
-                        content = ''
+                        contents = ''
                         in_tag = False
                     else:
                         tag_name += c
@@ -82,7 +82,7 @@ class Stags:
                     self.duplicates.remove(t[0])
         
         # Iterate tags and build tree
-        content = ''
+        contents = ''
         for tag in self.tags:
             parts = tag[0].split()
             name = tag[0]
@@ -100,7 +100,7 @@ class Stags:
                         self.tree.birth(Element(name, '', attributes))
                         self.tree.get_parent()
                     elif tag[0][0] == '/':
-                        self.tree.node.content += tag[2]
+                        self.tree.node.contents += tag[2]
                         self.tree.get_parent()
                     else:
                         self.tree.birth(Element(name, '', attributes))
