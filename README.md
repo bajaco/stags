@@ -5,7 +5,15 @@ scrape.py is a script that uses the Stags class to create a jobs feed in the ter
 **Currently only accepts general search terms without special characters. A comma in the location is acceptable.**
 
 #### Usage:
-Edit the interval and search options as needed, then:
+
+1. Install requests:
+optionally make virtual environment:
+- `python -m venv venv`
+- `source venv/bin/activate`
+Install requests: 
+`pip install requests` or:
+`pip install -r requirements.txt`
+2. Run the script and follow prompts:
 `python scrape.py`
 
 # Stags
