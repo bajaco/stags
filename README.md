@@ -40,7 +40,7 @@ Returns list of tags as filtered and modified by other operations
 Each tag element has the following properties:
 
 `tag.name`
-`tag.content`
+`tag.contents`
 `tag.attributes`
 `tag.get_attribute(attribute)`, Which returns the value of an attribute, or None
 
