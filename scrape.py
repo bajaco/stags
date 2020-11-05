@@ -33,6 +33,7 @@ def search(jobs, SEARCH, LOCATION):
         previous_job_count = len(new_jobs)
         url = SITE + '/jobs?q={}&l={}&sort=date&filter=0&fromage={}&start={}'.format(
                 SEARCH,LOCATION,FROMAGE,START)
+        print(f'Requesting jobs from {url}.')
         stags = Stags(url, agent, 'get') 
         stags.filter_attributes('data-jk')
         job_codes = [e.attributes['data-jk'] for e in stags.query()]
@@ -54,9 +55,10 @@ def search(jobs, SEARCH, LOCATION):
         for job in new_jobs.items():
             print('{}: {}'.format(job[1]['title'],job[1]['link']))
             print('\n')
-    else:
-        print('No new jobs')
-    print(datetime.datetime.now())
+    job_term = 'jobs'
+    if len(new_jobs) == 1:
+        job_term = 'job'
+    print(f'{len(new_jobs)} new {job_term} at {datetime.datetime.now()}.')
     print('----------------------------------------------------------------------------')
     jobs.update(new_jobs) 
 
